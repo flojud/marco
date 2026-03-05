@@ -30,24 +30,16 @@ st.markdown("""
         border: 3px dashed #ff4b4b !important;
         padding: 2rem !important;
         border-radius: 15px;
-        background-color: #fff5f5;
-    }
-    /* Das Wort 'Browse files' im Button können wir nicht ändern, aber wir machen das Feld attraktiver */
-    .stFileUploader section > div:first-child {
-        display: none !important;
     }
     h1 {
         text-align: center;
         color: #ff4b4b;
         font-size: 3rem !important;
     }
-    /* Streamlit Menü, Footer, Header und die Toolbar unten rechts komplett entfernen */
-    #MainMenu {display: none !important;}
-    footer {display: none !important;}
-    header {display: none !important;}
-    .stAppToolbar {display: none !important;}
-    div[data-testid="stAppToolbar"] {display: none !important;}
-    button[title="View source code"] {display: none !important;}
+    /* Streamlit Menü, Footer und Header ausblenden */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
 
