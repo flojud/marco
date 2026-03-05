@@ -44,7 +44,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Header
-st.title("🎂 Happy Birthday")
+st.title("🎂 Happy Birthday Marco")
 
 # Dropbox Logik
 def upload_to_dropbox(file_obj, filename):
@@ -74,7 +74,7 @@ if 'hochgeladene_dateien' not in st.session_state:
 
 # Der Uploader (Accepts multiple files)
 uploaded_files = st.file_uploader(
-    "Teilt eure Party Fotos & Videos mit Marco", 
+    "Teilt eure Party Fotos & Videos mit uns", 
     type=["jpg", "jpeg", "png", "mp4", "mov", "avi"], 
     accept_multiple_files=True,
     label_visibility="visible"
