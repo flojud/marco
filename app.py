@@ -30,29 +30,24 @@ st.markdown("""
         border: 3px dashed #ff4b4b !important;
         padding: 2rem !important;
         border-radius: 15px;
+        background-color: #fff5f5;
     }
-    /* Englische Texte im Uploader ausblenden */
-    .stFileUploader section div div {
+    /* Das Wort 'Browse files' im Button können wir nicht ändern, aber wir machen das Feld attraktiver */
+    .stFileUploader section > div:first-child {
         display: none !important;
-    }
-    .stFileUploader section button {
-        margin-top: 0 !important;
     }
     h1 {
         text-align: center;
         color: #ff4b4b;
         font-size: 3rem !important;
     }
-    /* ALLES von Streamlit (Toolbar, Header, Footer) wirklich ausblenden */
-    [data-testid="stAppToolbar"], 
-    [data-testid="stHeader"], 
-    [data-testid="stFooter"],
-    footer {
-        display: none !important;
-        height: 0 !important;
-        width: 0 !important;
-        visibility: hidden !important;
-    }
+    /* Streamlit Menü, Footer, Header und die Toolbar unten rechts komplett entfernen */
+    #MainMenu {display: none !important;}
+    footer {display: none !important;}
+    header {display: none !important;}
+    .stAppToolbar {display: none !important;}
+    div[data-testid="stAppToolbar"] {display: none !important;}
+    button[title="View source code"] {display: none !important;}
     </style>
     """, unsafe_allow_html=True)
 
