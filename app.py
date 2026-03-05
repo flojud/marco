@@ -44,8 +44,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Header
-st.title("🎂 Marcos 50.")
-st.markdown('<p class="big-text">Fotos & Videos für Marco hochladen</p>', unsafe_allow_html=True)
+st.title("🎂 Happy Birthday")
 
 # Dropbox Logik
 def upload_to_dropbox(file_obj, filename):
@@ -75,7 +74,7 @@ if 'hochgeladene_dateien' not in st.session_state:
 
 # Der Uploader (Accepts multiple files)
 uploaded_files = st.file_uploader(
-    "Hier drücken, um Fotos auszuwählen", 
+    "Teilt eure Party Fotos & Videos mit Marco", 
     type=["jpg", "jpeg", "png", "mp4", "mov", "avi"], 
     accept_multiple_files=True,
     label_visibility="visible"
@@ -114,4 +113,4 @@ st.info("💡 **So geht's:** Klicke oben auf das große Feld, wähle deine schö
 
 # Footer
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: gray;'>Viel Spaß beim Feiern! 🥳</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Danke! 🥳</p>", unsafe_allow_html=True)
