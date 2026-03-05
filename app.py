@@ -12,137 +12,143 @@ st.set_page_config(
     layout="centered"
 )
 
-# Extrem einfaches Design (Dribbble-Style)
+# Extrem einfaches Design für bessere Lesbarkeit
 st.markdown("""
     <style>
-    /* Hintergrund & Container */
-    .stApp {
+    .main {
         background-color: #ffffff;
     }
-    .main .block-container {
-        padding-top: 5rem;
-        max-width: 500px;
-    }
-    
-    /* Header Styling */
-    h1 {
+    /* Größere Schrift für die Anweisungen */
+    .big-text {
+        font-size: 1.5rem !important;
+        font-weight: bold;
         text-align: center;
-        color: #1a1a1a;
-        font-family: 'Inter', sans-serif;
-        font-weight: 800;
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 2rem;
     }
-    .sub-header {
-        text-align: center;
-        color: #666;
-        font-size: 1.1rem;
-        margin-bottom: 3rem;
-    }
-
-    /* Der moderne Upload-Kasten (Dribbble Style) */
+    /* Den Datei-Uploader Bereich optisch hervorheben */
     .stFileUploader section {
-        background-color: #fafafa !important;
-        border: 2px dashed #e0e0e0 !important;
-        padding: 4rem 2rem !important;
-        border-radius: 20px !important;
-        transition: all 0.3s ease-in-out !important;
-        cursor: pointer;
+        border: 3px dashed #ff4b4b !important;
+        padding: 3rem !important;
+        border-radius: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
     }
     .stFileUploader section:hover {
-        border-color: #ff4b4b !important;
-        background-color: #fffafa !important;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        background-color: rgba(255, 75, 75, 0.05) !important;
+        border-color: #ff3333 !important;
     }
-
-    /* 'Browse files' Button stylen */
-    .stFileUploader section button {
-        background-color: #1a1a1a !important;
-        color: white !important;
-        border-radius: 10px !important;
-        padding: 0.8rem 2rem !important;
-        font-weight: 600 !important;
-        border: none !important;
-        margin: 0 auto !important;
-        display: block !important;
-    }
-    
-    /* Englische Texte komplett weg */
+    /* Englische Texte im Uploader ausblenden */
     .stFileUploader section div div {
         display: none !important;
     }
-    
-    /* Icon-Ersatz (Simuliert das Upload-Icon) */
-    .stFileUploader section::before {
-        content: '📸';
-        display: block;
-        font-size: 3rem;
-        text-align: center;
-        margin-bottom: 1rem;
+    /* Den 'Browse files' Button zentrieren und schöner machen */
+    .stFileUploader section button {
+        margin: 0 auto !important;
+        padding: 0.5rem 2rem !important;
+        background-color: #ff4b4b !important;
+        color: white !important;
+        border: none !important;
+        font-size: 1.2rem !important;
     }
-
-    /* Alles von Streamlit verstecken */
-    [data-testid="stAppToolbar"], [data-testid="stHeader"], [data-testid="stFooter"], 
-    footer, header, #stDecoration {
+    h1 {
+        text-align: center;
+        color: #ff4b4b;
+        font-size: 3rem !important;
+    }
+    /* RADIKALES AUSBLENDEN aller Streamlit-Elemente */
+    [data-testid="stAppToolbar"], 
+    [data-testid="stHeader"], 
+    [data-testid="stFooter"],
+    [data-testid="stStatusWidget"],
+    .stAppDeployButton,
+    footer, 
+    header,
+    #stDecoration {
         display: none !important;
         visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    /* Verhindert das Scrollen zu weit nach unten */
+    .main .block-container {
+        padding-bottom: 0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
 # Header
-st.title("Marcos 50.")
-st.markdown('<p class="sub-header">Wähle Fotos oder Videos aus deiner Galerie</p>', unsafe_allow_html=True)
+st.title("🎂 Marcos 50.")
+st.markdown('<p class="big-text">Fotos & Videos für Marco hochladen</p>', unsafe_allow_html=True)
 
-# Dropbox Logik (Bleibt gleich)
+# Dropbox Logik
 def upload_to_dropbox(file_obj, filename):
     token = os.getenv("DROPBOX_ACCESS_TOKEN")
     if not token:
-        st.error("Konfigurationsfehler: Token fehlt.")
+        st.error("Konfigurationsfehler: Bitte den Administrator informieren (Token fehlt).")
         return False
     
     try:
         dbx = dropbox.Dropbox(token)
         clean_name = re.sub(r'[^a-zA-Z0-9\._-]', '_', filename)
-        timestamp = datetime.now().strftime("%H%M%S")
+        timestamp = datetime.now().strftime("%H%M%S") # Nur Zeit für den Dateinamen
         date_folder = datetime.now().strftime("%Y-%m-%d")
+        
+        # Ordner-Struktur: /Marcos_50_Uploads/DATUM/ZEIT_NAME.jpg
         target_path = f"/Marcos_50_Uploads/{date_folder}/{timestamp}_{clean_name}"
+        
         dbx.files_upload(file_obj.getvalue(), target_path, mode=dropbox.files.WriteMode.overwrite)
         return True
-    except Exception:
+    except Exception as e:
+        st.error(f"Fehler beim Hochladen von {filename}. Bitte nochmal versuchen.")
         return False
 
-# Session State
+# Session State initialisieren, um doppelte Uploads zu vermeiden
 if 'hochgeladene_dateien' not in st.session_state:
     st.session_state.hochgeladene_dateien = set()
 
-# Uploader
+# Der Uploader (Accepts multiple files)
 uploaded_files = st.file_uploader(
-    "Upload", 
+    "Hier drücken, um Fotos auszuwählen", 
     type=["jpg", "jpeg", "png", "mp4", "mov", "avi"], 
     accept_multiple_files=True,
-    label_visibility="collapsed"
+    label_visibility="visible"
 )
 
-# Upload Prozess
+# Automatischer Upload-Prozess
 if uploaded_files:
+    # Nur Dateien hochladen, die noch nicht in dieser Sitzung hochgeladen wurden
     neue_dateien = [f for f in uploaded_files if f.name not in st.session_state.hochgeladene_dateien]
     
     if neue_dateien:
-        status_text = st.empty()
         progress_bar = st.progress(0)
+        status_text = st.empty()
         
         erfolgreich = 0
+        gesamt = len(neue_dateien)
+        
         for i, datei in enumerate(neue_dateien):
-            status_text.markdown(f"<p style='text-align:center'>Lade hoch: {datei.name}</p>", unsafe_allow_html=True)
+            status_text.markdown(f"**Wird hochgeladen:** {datei.name}...")
             if upload_to_dropbox(datei, datei.name):
                 erfolgreich += 1
                 st.session_state.hochgeladene_dateien.add(datei.name)
-            progress_bar.progress((i + 1) / len(neue_dateien))
+            
+            progress_bar.progress((i + 1) / gesamt)
         
         status_text.empty()
         progress_bar.empty()
 
         if erfolgreich > 0:
             st.balloons()
-            st.success("✨ Deine Fotos sind sicher bei Marco angekommen!")
+            st.success(f"✅ Fertig! {erfolgreich} Datei(en) sind sicher bei Marco angekommen.")
+            st.markdown('<p style="text-align: center; font-size: 1.2rem;">Du kannst jetzt einfach weitere Fotos auswählen oder die Seite schließen.</p>', unsafe_allow_html=True)
+
+# Kurze Anleitung für die Gäste
+st.info("💡 **So geht's:** Klicke oben auf das große Feld, wähle deine schönsten Fotos aus deiner Galerie aus und bestätige mit 'Hinzufügen' oder 'Fertig'. Der Rest passiert von ganz allein!")
+
+# Footer
+st.markdown("---")
+st.markdown("<p style='text-align: center; color: gray;'>Viel Spaß beim Feiern! 🥳</p>", unsafe_allow_html=True)
