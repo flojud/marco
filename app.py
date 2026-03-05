@@ -28,30 +28,54 @@ st.markdown("""
     /* Den Datei-Uploader Bereich optisch hervorheben */
     .stFileUploader section {
         border: 3px dashed #ff4b4b !important;
-        padding: 2rem !important;
+        padding: 3rem !important;
         border-radius: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+    .stFileUploader section:hover {
+        background-color: rgba(255, 75, 75, 0.05) !important;
+        border-color: #ff3333 !important;
     }
     /* Englische Texte im Uploader ausblenden */
     .stFileUploader section div div {
         display: none !important;
     }
+    /* Den 'Browse files' Button zentrieren und schöner machen */
     .stFileUploader section button {
-        margin-top: 0 !important;
+        margin: 0 auto !important;
+        padding: 0.5rem 2rem !important;
+        background-color: #ff4b4b !important;
+        color: white !important;
+        border: none !important;
+        font-size: 1.2rem !important;
     }
     h1 {
         text-align: center;
         color: #ff4b4b;
         font-size: 3rem !important;
     }
-    /* ALLES von Streamlit (Toolbar, Header, Footer) wirklich ausblenden */
+    /* RADIKALES AUSBLENDEN aller Streamlit-Elemente */
     [data-testid="stAppToolbar"], 
     [data-testid="stHeader"], 
     [data-testid="stFooter"],
-    footer {
+    [data-testid="stStatusWidget"],
+    .stAppDeployButton,
+    footer, 
+    header,
+    #stDecoration {
         display: none !important;
+        visibility: hidden !important;
         height: 0 !important;
         width: 0 !important;
-        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    /* Verhindert das Scrollen zu weit nach unten */
+    .main .block-container {
+        padding-bottom: 0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
