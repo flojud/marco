@@ -36,6 +36,10 @@ st.markdown("""
         color: #ff4b4b;
         font-size: 3rem !important;
     }
+    /* Streamlit Menü, Footer und Header ausblenden */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
 
