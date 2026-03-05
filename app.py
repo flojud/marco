@@ -5,102 +5,108 @@ import os
 from datetime import datetime
 import re
 
-# Page configuration
+# Seite konfigurieren
 st.set_page_config(
     page_title="Marcos 50. Geburtstag",
     page_icon="🎂",
     layout="centered"
 )
 
-# Custom Styling
+# Extrem einfaches Design für bessere Lesbarkeit
 st.markdown("""
     <style>
     .main {
-        background-color: #f8f9fa;
+        background-color: #ffffff;
     }
-    .stButton>button {
-        width: 100%;
-        height: 4em;
-        font-size: 1.2rem;
-        background-color: #ff4b4b;
-        color: white;
-        border-radius: 12px;
-        border: none;
+    /* Größere Schrift für die Anweisungen */
+    .big-text {
+        font-size: 1.5rem !important;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 2rem;
     }
-    .stButton>button:hover {
-        background-color: #ff3333;
-        border: none;
-        color: white;
+    /* Den Datei-Uploader Bereich optisch hervorheben */
+    .stFileUploader section {
+        border: 3px dashed #ff4b4b !important;
+        padding: 2rem !important;
+        border-radius: 15px;
     }
     h1 {
         text-align: center;
-        color: #1f1f1f;
-        margin-bottom: 2rem;
+        color: #ff4b4b;
+        font-size: 3rem !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
 # Header
-st.title("🎂 Marcos 50. Geburtstag")
-st.markdown("<h4 style='text-align: center;'>Lade hier deine Fotos & Videos für Marco hoch!</h4>", unsafe_allow_html=True)
+st.title("🎂 Marcos 50.")
+st.markdown('<p class="big-text">Fotos & Videos für Marco hochladen</p>', unsafe_allow_html=True)
 
-# Dropbox Logic
+# Dropbox Logik
 def upload_to_dropbox(file_obj, filename):
     token = os.getenv("DROPBOX_ACCESS_TOKEN")
     if not token:
-        st.error("Konfigurationsfehler: DROPBOX_ACCESS_TOKEN fehlt.")
+        st.error("Konfigurationsfehler: Bitte den Administrator informieren (Token fehlt).")
         return False
     
     try:
         dbx = dropbox.Dropbox(token)
-        # Clean filename: keep alphanumeric, dots, underscores, dashes
         clean_name = re.sub(r'[^a-zA-Z0-9\._-]', '_', filename)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        target_path = f"/Marcos_50_Uploads/{timestamp}_{clean_name}"
+        timestamp = datetime.now().strftime("%H%M%S") # Nur Zeit für den Dateinamen
+        date_folder = datetime.now().strftime("%Y-%m-%d")
         
-        # Stream upload for larger files
+        # Ordner-Struktur: /Marcos_50_Uploads/DATUM/ZEIT_NAME.jpg
+        target_path = f"/Marcos_50_Uploads/{date_folder}/{timestamp}_{clean_name}"
+        
         dbx.files_upload(file_obj.getvalue(), target_path, mode=dropbox.files.WriteMode.overwrite)
         return True
-    except ApiError as e:
-        st.error(f"Dropbox Fehler: {e}")
-        return False
     except Exception as e:
-        st.error(f"Fehler: {e}")
+        st.error(f"Fehler beim Hochladen von {filename}. Bitte nochmal versuchen.")
         return False
 
-# UI Components
+# Session State initialisieren, um doppelte Uploads zu vermeiden
+if 'hochgeladene_dateien' not in st.session_state:
+    st.session_state.hochgeladene_dateien = set()
+
+# Der Uploader (Accepts multiple files)
 uploaded_files = st.file_uploader(
-    "Wähle Bilder oder Videos aus", 
+    "Hier drücken, um Fotos auszuwählen", 
     type=["jpg", "jpeg", "png", "mp4", "mov", "avi"], 
     accept_multiple_files=True,
-    label_visibility="collapsed"
+    label_visibility="visible"
 )
 
+# Automatischer Upload-Prozess
 if uploaded_files:
-    if st.button("🚀 Jetzt für Marco hochladen"):
+    # Nur Dateien hochladen, die noch nicht in dieser Sitzung hochgeladen wurden
+    neue_dateien = [f for f in uploaded_files if f.name not in st.session_state.hochgeladene_dateien]
+    
+    if neue_dateien:
         progress_bar = st.progress(0)
         status_text = st.empty()
         
-        success_count = 0
-        total_files = len(uploaded_files)
+        erfolgreich = 0
+        gesamt = len(neue_dateien)
         
-        for i, uploaded_file in enumerate(uploaded_files):
-            status_text.text(f"Lade '{uploaded_file.name}' hoch...")
-            if upload_to_dropbox(uploaded_file, uploaded_file.name):
-                success_count += 1
+        for i, datei in enumerate(neue_dateien):
+            status_text.markdown(f"**Wird hochgeladen:** {datei.name}...")
+            if upload_to_dropbox(datei, datei.name):
+                erfolgreich += 1
+                st.session_state.hochgeladene_dateien.add(datei.name)
             
-            # Update progress
-            progress_bar.progress((i + 1) / total_files)
+            progress_bar.progress((i + 1) / gesamt)
         
-        if success_count == total_files:
+        status_text.empty()
+        progress_bar.empty()
+
+        if erfolgreich > 0:
             st.balloons()
-            st.success("✨ Danke! Dein Beitrag ist sicher bei Marco angekommen.")
-        elif success_count > 0:
-            st.warning(f"Einige Dateien ({success_count}/{total_files}) wurden hochgeladen.")
-        else:
-            st.error("Upload fehlgeschlagen.")
-else:
-    st.info("💡 Tipp: Du kannst mehrere Dateien gleichzeitig aus deiner Galerie auswählen.")
+            st.success(f"✅ Fertig! {erfolgreich} Datei(en) sind sicher bei Marco angekommen.")
+            st.markdown('<p style="text-align: center; font-size: 1.2rem;">Du kannst jetzt einfach weitere Fotos auswählen oder die Seite schließen.</p>', unsafe_allow_html=True)
+
+# Kurze Anleitung für die Gäste
+st.info("💡 **So geht's:** Klicke oben auf das große Feld, wähle deine schönsten Fotos aus deiner Galerie aus und bestätige mit 'Hinzufügen' oder 'Fertig'. Der Rest passiert von ganz allein!")
 
 # Footer
 st.markdown("---")
