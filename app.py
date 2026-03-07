@@ -88,10 +88,10 @@ st.markdown(f"""
         padding: 4.5rem 1.5rem !important;
         border-radius: 35px !important;
         text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
     }}
 
     /* Kamera Icon */
