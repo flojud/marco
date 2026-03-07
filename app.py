@@ -32,7 +32,7 @@ st.markdown(f"""
     <style>
     /* Äußerer Seiten-Hintergrund (Beige/Grau) */
     .stApp {{ 
-        background-color: #9c9581 !important; 
+        background-color: #ffffff !important; 
     }}
     
     /* Die weiße Karte (Container) */
@@ -85,7 +85,7 @@ st.markdown(f"""
     .stFileUploader section::before {{
         content: "";
         display: block;
-        width: 140px;
+        width: 100%;
         height: 140px;
         margin: 0 auto 1.5rem auto;
         background-image: url("data:image/png;base64,{camera_base64}");
@@ -98,7 +98,6 @@ st.markdown(f"""
     .stFileUploader section button {{
         background: linear-gradient(180deg, #dfbc5e 0%, #b8860b 100%) !important;
         color: #1a1a1a !important;
-        border-radius: 20px !important;
         padding: 0.9rem 2.5rem !important;
         font-weight: 700 !important;
         font-size: 1.25rem !important;
