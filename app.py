@@ -108,11 +108,11 @@ st.markdown(f"""
     }}
 
     /* Container des Buttons auf 100% Breite setzen */
-    .stFileUploader section > div {
+    .stFileUploader section > div {{
         width: 100% !important;
         display: flex !important;
         justify-content: center !important;
-    }
+    }}
 
     /* Der Goldene Button - Jetzt 100% Breite */
     .stFileUploader section button {{
