@@ -107,6 +107,13 @@ st.markdown(f"""
         background-position: center;
     }}
 
+    /* Container des Buttons auf 100% Breite setzen */
+    .stFileUploader section > div {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
     /* Der Goldene Button - Jetzt 100% Breite */
     .stFileUploader section button {{
         background: linear-gradient(180deg, #dfbc5e 0%, #b8860b 100%) !important;
