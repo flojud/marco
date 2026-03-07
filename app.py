@@ -41,7 +41,7 @@ st.markdown(f"""
     
     /* Äußerer Seiten-Hintergrund (Beige/Grau) */
     .stApp {{ 
-        background-color: #9c9581 !important; 
+        background-color: #ffffff !important; 
     }}
     
     /* Die weiße Karte (Container) */
