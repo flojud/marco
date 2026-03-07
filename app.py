@@ -83,15 +83,34 @@ st.markdown("""
 st.title("Marcos 50.")
 st.markdown('<p class="sub-header">Wähle Fotos oder Videos aus deiner Galerie</p>', unsafe_allow_html=True)
 
-# Dropbox Logik mit detaillierter Fehlermeldung
+# Dropbox Logik mit Unterstützung für Refresh-Tokens (Dauerhaft gültig)
+def get_dropbox_client():
+    # 1. Versuch: Refresh Token Flow (Empfohlen für die Party)
+    refresh_token = os.getenv("DROPBOX_REFRESH_TOKEN")
+    app_key = os.getenv("DROPBOX_APP_KEY")
+    app_secret = os.getenv("DROPBOX_APP_SECRET")
+    
+    if refresh_token and app_key and app_secret:
+        return dropbox.Dropbox(
+            oauth2_refresh_token=refresh_token,
+            app_key=app_key,
+            app_secret=app_secret
+        )
+    
+    # 2. Versuch: Einfacher Access Token (Hält nur 4 Std.)
+    access_token = os.getenv("DROPBOX_ACCESS_TOKEN")
+    if access_token:
+        return dropbox.Dropbox(access_token)
+        
+    return None
+
 def upload_to_dropbox(file_obj, filename):
-    token = os.getenv("DROPBOX_ACCESS_TOKEN")
-    if not token:
-        st.error("Fehler: Dropbox Token fehlt in den Einstellungen.")
+    dbx = get_dropbox_client()
+    if not dbx:
+        st.error("Fehler: Keine Dropbox-Zugangsdaten gefunden (Token fehlt).")
         return False
     
     try:
-        dbx = dropbox.Dropbox(token)
         clean_name = re.sub(r'[^a-zA-Z0-9\._-]', '_', filename)
         timestamp = datetime.now().strftime("%H%M%S")
         date_folder = datetime.now().strftime("%Y-%m-%d")
@@ -100,7 +119,7 @@ def upload_to_dropbox(file_obj, filename):
         dbx.files_upload(file_obj.getvalue(), target_path, mode=dropbox.files.WriteMode.overwrite)
         return True
     except AuthError:
-        st.error("Fehler: Der Dropbox Token ist ungültig oder abgelaufen.")
+        st.error("Fehler: Dropbox Token ist ungültig oder abgelaufen.")
     except ApiError as e:
         st.error(f"Dropbox API Fehler: {e}")
     except Exception as e:
