@@ -79,6 +79,7 @@ st.markdown(f"""
         padding: 4.5rem 1.5rem !important;
         border-radius: 35px !important;
         text-align: center;
+        width: 100%
     }}
 
     /* Kamera Icon */
