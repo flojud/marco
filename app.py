@@ -127,14 +127,17 @@ st.markdown(f"""
     /* Text-Ersatz für den Button auf Deutsch & Zentriert */
     .stFileUploader section button span {{
         visibility: hidden;
+        display: block !important;
+        width: 100% !important;
     }}
     .stFileUploader section button span::before {{
         content: "Fotos & Videos hochladen";
         visibility: visible;
         display: block;
         position: absolute;
-        width: 100%;
+        width: 100% !important;
         left: 0;
+        right: 0;
         top: 50%;
         transform: translateY(-50%);
         text-align: center;
