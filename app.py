@@ -107,7 +107,7 @@ st.markdown(f"""
         background-position: center;
     }}
 
-    /* Der Goldene Button - Jetzt zentriert */
+    /* Der Goldene Button - Jetzt 100% Breite */
     .stFileUploader section button {{
         background: linear-gradient(180deg, #dfbc5e 0%, #b8860b 100%) !important;
         color: #1a1a1a !important;
@@ -118,7 +118,7 @@ st.markdown(f"""
         border: none !important;
         box-shadow: 0 5px 20px rgba(184, 134, 11, 0.4) !important;
         text-transform: none !important;
-        min-width: 250px;
+        width: 100% !important;
         margin: 0 auto !important;
         display: block !important;
         position: relative;
@@ -142,6 +142,12 @@ st.markdown(f"""
 
     /* Englische Texte entfernen */
     .stFileUploader section div div {{ display: none !important; }}
+
+    /* Dateinamen-Text in Schwarz */
+    [data-testid="stFileUploaderFileData"] div {{
+        color: #000000 !important;
+        font-weight: 500 !important;
+    }}
 
     /* Erfolgsmeldung */
     .success-box {{
