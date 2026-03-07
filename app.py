@@ -80,6 +80,7 @@ st.markdown(f"""
         border-radius: 35px !important;
         text-align: center;
         width: 100%
+        align-items: center;
     }}
 
     /* Kamera Icon */
