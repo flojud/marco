@@ -27,12 +27,21 @@ bg_base64 = get_image_base64("assets/background.png")
 camera_base64 = get_image_base64("assets/camera.png")
 header_base64 = get_image_base64("assets/marcos50.png")
 
-# Finales Design laut Screenshot
+# Finales Design laut Screenshot & Feedback
 st.markdown(f"""
     <style>
+    /* Das 6rem Padding von Streamlit hart überschreiben */
+    .stAppViewContainer {{
+        padding-top: 0 !important;
+    }}
+    .stMainBlockContainer {{
+        padding-top: 1rem !important;
+        padding-bottom: 2rem !important;
+    }}
+    
     /* Äußerer Seiten-Hintergrund (Beige/Grau) */
     .stApp {{ 
-        background-color: #ffffff !important; 
+        background-color: #9c9581 !important; 
     }}
     
     /* Die weiße Karte (Container) */
@@ -40,9 +49,9 @@ st.markdown(f"""
         background-color: #ffffff !important;
         border-radius: 40px !important;
         max-width: 500px !important;
-        margin-top: 2rem !important;
+        margin-top: 1rem !important;
         margin-bottom: 2rem !important;
-        padding: 2rem 1.5rem 4rem 1.5rem !important;
+        padding: 1rem 1.5rem 4rem 1.5rem !important;
         box-shadow: 0 15px 50px rgba(0,0,0,0.2) !important;
     }}
 
@@ -79,15 +88,17 @@ st.markdown(f"""
         padding: 4.5rem 1.5rem !important;
         border-radius: 35px !important;
         text-align: center;
-        width: 100%
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        justify-content: center;
     }}
 
     /* Kamera Icon */
     .stFileUploader section::before {{
         content: "";
         display: block;
-        width: 100%;
+        width: 140px;
         height: 140px;
         margin: 0 auto 1.5rem auto;
         background-image: url("data:image/png;base64,{camera_base64}");
@@ -96,10 +107,11 @@ st.markdown(f"""
         background-position: center;
     }}
 
-    /* Der Goldene Button */
+    /* Der Goldene Button - Jetzt zentriert */
     .stFileUploader section button {{
         background: linear-gradient(180deg, #dfbc5e 0%, #b8860b 100%) !important;
         color: #1a1a1a !important;
+        border-radius: 20px !important;
         padding: 0.9rem 2.5rem !important;
         font-weight: 700 !important;
         font-size: 1.25rem !important;
@@ -107,9 +119,12 @@ st.markdown(f"""
         box-shadow: 0 5px 20px rgba(184, 134, 11, 0.4) !important;
         text-transform: none !important;
         min-width: 250px;
+        margin: 0 auto !important;
+        display: block !important;
+        position: relative;
     }}
     
-    /* Text-Ersatz für den Button */
+    /* Text-Ersatz für den Button auf Deutsch & Zentriert */
     .stFileUploader section button span {{
         visibility: hidden;
     }}
@@ -117,12 +132,18 @@ st.markdown(f"""
         content: "Fotos & Videos hochladen";
         visibility: visible;
         display: block;
+        position: absolute;
+        width: 100%;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
     }}
 
     /* Englische Texte entfernen */
     .stFileUploader section div div {{ display: none !important; }}
 
-    /* Erfolgsmeldung im Screenshot-Look (Grün mit Konfetti) */
+    /* Erfolgsmeldung */
     .success-box {{
         background-color: #d1f2e5;
         color: #2c6e49;
@@ -132,7 +153,6 @@ st.markdown(f"""
         font-size: 1.1rem;
         margin-top: 2rem;
         font-weight: 500;
-        position: relative;
     }}
     </style>
     """, unsafe_allow_html=True)
